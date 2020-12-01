@@ -1,0 +1,68 @@
+
+from copy import deepcopy
+MATRIX_SIZE=3
+REQ_VERSION = (3, 0)
+
+
+def calculate_permutations(matrix):
+    options = [(-1, 0, "U"), (1, 0, "D"), (0, -1, "L"), (0, 1, "R")]
+    permutations = []
+    row = col = -1
+    for i in range(MATRIX_SIZE):
+        for j in range(MATRIX_SIZE):
+            if matrix[i][j] == 0:
+                row = i
+                col = j
+
+    for i, j, letter in options:
+        if 0 <= row + i < MATRIX_SIZE and 0 <= col + j < MATRIX_SIZE:
+            temp = deepcopy(matrix)  # creates a copy of the matrix so we dont change it in place
+            temp[row][col], temp[row+i][col+j] = temp[row+i][col+j], temp[row][col]
+            permutations.append((temp, letter))
+
+    return permutations
+
+
+def check_answer(matrix):
+    answer = True
+    for i in range(MATRIX_SIZE):
+        for j in range(1, MATRIX_SIZE + 1):
+            if matrix[i][j-1] != i*MATRIX_SIZE + j and (i != MATRIX_SIZE - 1 or j != MATRIX_SIZE):
+                answer = False
+    return answer
+
+
+def count_inversions(array):
+    """Function for counting the amount of inversions in """
+    count = 0
+    size = MATRIX_SIZE*MATRIX_SIZE
+
+    for i in range(size-1):
+        for j in range(i+1, size):
+            if array[i] != 0 and array[j] != 0 and array[i] > array[j]:
+                count += 1
+
+    return count
+
+
+def has_answer(matrix):
+    """For checking if the puzzle is solvable, we used the following side as a guide:
+        http://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+    Resuming, the puzzle instance is solvable if
+        the blank is on an even and number of inversions is odd.
+        the blank is on an odd row and number of inversions is even.
+    """
+    zero_pos = -1
+    for i in range(MATRIX_SIZE):
+        for j in range(MATRIX_SIZE):
+            if matrix[i][j] == 0:
+                zero_pos = i
+
+    inversions = count_inversions([num for row in matrix for num in row])
+
+    return (zero_pos % 2 == 0 and inversions % 2 == 1) or (zero_pos % 2 == 1 and inversions % 2 == 0)
+
+
+def tuplize(matrix):
+    """Returns a linear version of a matrix"""
+    return tuple([num for row in matrix for num in row])
