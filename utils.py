@@ -51,18 +51,12 @@ def has_answer(matrix):
     """For checking if the puzzle is solvable, we used the following side as a guide:
         http://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
     Resuming, the puzzle instance is solvable if
-        the blank is on an even and number of inversions is odd.
-        the blank is on an odd row and number of inversions is even.
+        the number of inversions is even (because N=3 is odd).
     """
-    zero_pos = -1
-    for i in range(MATRIX_SIZE):
-        for j in range(MATRIX_SIZE):
-            if matrix[i][j] == 0:
-                zero_pos = i
 
     inversions = count_inversions([num for row in matrix for num in row])
 
-    return (zero_pos % 2 == 0 and inversions % 2 == 1) or (zero_pos % 2 == 1 and inversions % 2 == 0)
+    return ( inversions % 2 == 0 )
 
 
 def tuplize(matrix):
