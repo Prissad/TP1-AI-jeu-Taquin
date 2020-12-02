@@ -1,6 +1,6 @@
 import numpy as np
 from threading import Thread, Timer
-from game.random import random_move
+import random
 from game.exception import GridSizeNotValidException, MoveException, NoEmptyTileException, NoTileFoundException
 
 
@@ -8,6 +8,19 @@ MIN_SIZE = 2
 MAX_SIZE = 10
 DEFAULT_SIZE = 3
 
+def random_move(values):
+    return random.choice(values)
+
+def build_grid_from_input(size=DEFAULT_SIZE):
+    R = size
+    C = size
+    grid = [];
+    for i in range(R):
+        a = []
+        for j in range(C):
+            a.append(int(input()))
+        grid.append(a)
+    return np.array(grid)
 
 def build_grid(size=DEFAULT_SIZE):
     if not MIN_SIZE <= size <= MAX_SIZE:

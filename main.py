@@ -2,58 +2,70 @@
     Compte Rendu TP1 IA GL4 par Mohamed Taieb SLAMA
 '''
 
-
-
-
 import sys
 import os
 from game.exception import GridSizeNotValidException, MoveException
 from game.game import (
-    build_grid, movable_tiles, move, is_grid_resolved, shuffle,build_grid_test,move_letter
+    build_grid, movable_tiles, move, is_grid_resolved, shuffle,build_grid_from_input,build_grid_test,move_letter
 )
 from renderer.renderer import (
-    welcome, goodbye, shuffling, starting_turn,
+    welcome, goodbye, shuffling, waitingInput, starting_turn,
     victory, show_action_not_valid,
-    show_grid, show_moves, show_menu_size, show_size_not_valid, ask_move, ask_size
+    show_grid, show_moves, show_menu_size, show_size_not_valid, ask_move, ask_size,
+    heuristicChoice,waitingOutput
 )
 from time import sleep
 from a_star import solve
 
 
+DEFAULT_SIZE = 3
+
 def router(action, grid, started_grid, shuffled):
-    if action.lower().strip() == "s":
+    if action.lower().strip() == "i":
+        print(waitingInput())
+        inputgrid = build_grid_from_input().reshape(DEFAULT_SIZE, DEFAULT_SIZE)
+        return [inputgrid, started_grid, True, True]
+    elif action.lower().strip() == "s":
         print(shuffling())
-        return [shuffle(grid), started_grid, True,True]
+        return [shuffle(grid), started_grid, True, True]
     elif action.lower() == "solve":
+
+        print(heuristicChoice())
+        heuristic = input()
+        print(waitingOutput())
+        outputgrid = build_grid_from_input()
 
         print("Calculating solution...")
         
-        answer = solve(np_array_to_matrix(grid))
-        if answer != None:
-            if answer =="":
-                print("Matrix is already solved!")
-            else:
-                turn_number=1
-                print("Solution: "+str(len(answer))+" turns")
-                sleep(2)
-                os.system('cls')
-                print(starting_turn(turn_number))
-                print(show_grid(grid))
-                print(show_moves())
-                for mv in answer:
-                    print("Moving: ",mv)
-                    sleep(1)
-                    grid=move_letter(grid,mv)
+        try:
+            answer = solve(np_array_to_matrix(grid), outputgrid, heuristic)
+            if answer != None:
+                if answer =="":
+                    print("Matrix is already solved!")
+                else:
+                    turn_number=1
+                    print("Solution: "+str(len(answer))+" turns")
+                    sleep(2)
                     os.system('cls')
                     print(starting_turn(turn_number))
                     print(show_grid(grid))
                     print(show_moves())
-                    turn_number += 1
-                print("SOLVED!")
-                print("press ENTER to continue")
-                input()
-                return [grid,started_grid,False,True]
-                    
+                    for mv in answer:
+                        print("Moving: ",mv)
+                        sleep(1)
+                        grid=move_letter(grid,mv)
+                        os.system('cls')
+                        print(starting_turn(turn_number))
+                        print(show_grid(grid))
+                        print(show_moves())
+                        turn_number += 1
+                    print("SOLVED!")
+                    print("press ENTER to continue")
+                    input()
+                    return [grid,started_grid,False,True]
+        except:
+            print("No solution... better luck next time!")
+
     else:
         return [move_letter(grid, action), started_grid, True,False]
 
@@ -73,7 +85,7 @@ def play_one_turn(grid, started_grid, turn_number, shuffled):
 
     while True:
 
-        action = input('\n%s' % ask_move("solve", "S"))
+        action = input('\n%s' % ask_move("solve", "S", "I"))
 
         try:
             return router(action, grid, started_grid, shuffled)

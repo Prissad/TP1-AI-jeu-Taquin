@@ -8,10 +8,19 @@ def welcome():
 def goodbye():
     return 'Goodbye!'
 
+def waitingInput():
+    return 'Enter your input: (input each cell by entering a number and pressing enter, note that 0 is the empty cell)'
 
 def shuffling():
     return 'Shuffling the puzzle...'
 
+def heuristicChoice():
+    return 'Choose one the two heuristics below by typing its number:\n' \
+           '1) h1(n)=Manhattan Distance between the given piece and where it should be on the board\n' \
+           '2) h2(n)=number of misplaced elements'
+
+def waitingOutput():
+    return 'Enter your output: (input each cell by entering a number and pressing enter, note that 0 is the empty cell)'
 
 def starting_turn(turn_number):
     return 'Turn %s' % turn_number
@@ -63,10 +72,12 @@ def show_size_not_valid(size):
     return 'Sorry, "%s" is not a valid size' % size
 
 
-def ask_move(key_solve,key_shuffle):
+def ask_move(key_solve,key_shuffle,key_input):
     msg=""
+    if key_input:
+        msg += ' - Type (%s) to input a matrix' % key_input
     if key_shuffle:
-        msg += ' - Type (%s) to shuffle' % key_shuffle
+        msg += '\n - Type (%s) to shuffle' % key_shuffle
     if key_solve:
         msg += '\n - Type (%s) to solve' % key_solve
     msg += '\n\n >>> '

@@ -23,13 +23,15 @@ def calculate_permutations(matrix):
     return permutations
 
 
-def check_answer(matrix):
-    answer = True
+#check if answer matches given output
+def check_answer(matrix, output):
+    test = True
     for i in range(MATRIX_SIZE):
-        for j in range(1, MATRIX_SIZE + 1):
-            if matrix[i][j-1] != i*MATRIX_SIZE + j and (i != MATRIX_SIZE - 1 or j != MATRIX_SIZE):
-                answer = False
-    return answer
+        for j in range(MATRIX_SIZE):
+            if matrix[i][j] != output[i][j]:
+                test = False
+                break
+    return(test)
 
 
 def count_inversions(array):
